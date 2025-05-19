@@ -24,6 +24,12 @@ class Client extends Model
         'status' => 'string',
     ];
 
+    public function contacts()
+    {
+        return $this->hasMany(ClientContact::class);
+    }
+
+
     // العلاقات القادمة لاحقًا:
     // public function contacts()
     // {
