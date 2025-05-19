@@ -29,6 +29,14 @@ class Client extends Model
         return $this->hasMany(ClientContact::class);
     }
 
+    // app/Models/Client.php
+
+    public function notes()
+    {
+        return $this->hasMany(ClientNote::class);
+    }
+
+
 
     // العلاقات القادمة لاحقًا:
     // public function contacts()
