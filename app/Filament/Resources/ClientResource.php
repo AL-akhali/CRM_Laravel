@@ -74,13 +74,15 @@ class ClientResource extends Resource
                 Tables\Columns\TagsColumn::make('tags.name')
                 ->label('العلامات')
                 ->limit(3),
-                BadgeColumn::make('status')
-                    ->label('الحالة')
-                    ->colors([
-                        'success' => fn ($state) => $state === 'فعال',
-                        'danger' => fn ($state) => $state === 'غير فعال',
-                    ])
-                    ->formatStateUsing(fn ($state) => $state),
+                // عرض عدد جهات الاتصال
+                TextColumn::make('contacts_count')
+                    ->label('عدد جهات الاتصال')
+                    ->counts('contacts')   
+                    ->sortable(),
+                TextColumn::make('tags_count')
+                    ->label('عدد العلامات')
+                    ->counts('tags')
+                    ->sortable()
             ])
             ->filters([
                 SelectFilter::make('tag')

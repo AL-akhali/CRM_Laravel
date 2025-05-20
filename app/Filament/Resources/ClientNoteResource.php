@@ -6,6 +6,7 @@ use App\Filament\Resources\ClientNoteResource\RelationManagers;
 use App\Models\ClientNote;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -31,6 +32,11 @@ class ClientNoteResource extends Resource
                 ->label('الملاحظة')
                 ->required()
                 ->rows(4),
+            Forms\Components\TextInput::make('user.name')
+                ->label('الموظف')
+                ->disabled()
+                ->default(fn ($record) => $record?->user?->name ?? auth()->user()->name)
+                ->required(),
             Forms\Components\Select::make('visibility')
                 ->label('الظهور')
                 ->options([
@@ -53,7 +59,14 @@ class ClientNoteResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->label('تاريخ الإضافة')->dateTime(),
             ])
             ->defaultSort('created_at', 'desc')
-            ->filters([])
+            ->filters([
+            SelectFilter::make('visibility')
+                ->label('الظهور')
+                ->options([
+                    'public' => 'عامة',
+                    'private' => 'خاصة',
+                ]),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
