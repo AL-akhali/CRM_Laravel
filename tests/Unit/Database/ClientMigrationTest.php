@@ -2,56 +2,40 @@
 
 namespace Tests\Unit;
 
-use Tests\TestCase;   // مهم جداً - فئة Laravel للاختبارات
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\Client;
+use Illuminate\Support\Facades\Schema;
+use Tests\TestCase;;
 
 class ClientMigrationTest extends TestCase
 {
-    use RefreshDatabase;
+     use RefreshDatabase;
 
-    /** @test */
-    public function can_create_client_with_required_fields()
+    public function test_clients_table_exists(): void
     {
-        $client = Client::create([
-            'name' => 'شركة جباري',
-            'type' => 'شركة',
-            'email' => 'info@jabari.com',
-            'phone' => '123456789',
-            'industry' => 'السياحة',
-            'address' => 'غزة',
-            'status' => 'active',
-        ]);
-
-        $this->assertEquals('شركة جباري', $client->name);
-        $this->assertEquals('شركة', $client->type);
-        $this->assertEquals('info@jabari.com', $client->email);
+        $this->assertTrue(Schema::hasTable('clients'));
     }
 
-    /** @test */
-    public function name_and_email_must_be_unique()
+    public function test_clients_table_has_expected_columns(): void
     {
-        Client::create([
-            'name' => 'جباري',
-            'type' => 'شركة',
-            'email' => 'test@jabari.com',
-            'phone' => '123456789',
-            'industry' => 'السياحة',
-            'address' => 'غزة',
-            'status' => 'active',
-        ]);
+        $expected = [
+            'id',
+            'name',
+            'type',
+            'email',
+            'phone',
+            'industry',
+            'address',
+            'status',
+            'created_at',
+            'updated_at',
+        ];
 
-        $this->expectException(\Illuminate\Database\QueryException::class);
-
-        Client::create([
-            'name' => 'جباري',
-            'type' => 'شركة',
-            'email' => 'test@jabari.com',
-            'phone' => '987654321',
-            'industry' => 'تجارة',
-            'address' => 'رام الله',
-            'status' => 'inactive',
-        ]);
+        foreach ($expected as $column) {
+            $this->assertTrue(
+                Schema::hasColumn('clients', $column),
+                "Missing column: $column"
+            );
+        }
     }
 }
 

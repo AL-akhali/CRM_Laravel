@@ -36,6 +36,24 @@ class Client extends Model
         return $this->hasMany(ClientNote::class);
     }
 
+    // public function publicNotes()
+    // {
+    //     return $this->hasMany(ClientNote::class)->where('visibility', 'public');
+    // }
+
+    public function activities()
+    {
+        return $this->hasMany(ClientActivity::class);
+    }
+
+    // app/Models/Client.php
+
+    public function tags()
+    {
+        return $this->belongsToMany(ClientTag::class);
+    }
+
+
 
 
     // العلاقات القادمة لاحقًا:

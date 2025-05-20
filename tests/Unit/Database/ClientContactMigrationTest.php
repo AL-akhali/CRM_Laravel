@@ -1,59 +1,57 @@
 <?php
 
-namespace Tests\Unit\Models;
+namespace Tests\Feature;
 
-use App\Models\Client;
-use App\Models\ClientContact;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class ClientContactMigrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function it_can_create_a_client_contact_for_a_client()
+    public function test_client_contacts_table_exists(): void
     {
-        $client = Client::factory()->create();
-
-        $contact = ClientContact::create([
-            'client_id' => $client->id,
-            'name' => 'أحمد علي',
-            'email' => 'ahmad@example.com',
-            'phone' => '0599123456',
-            'position' => 'مدير مبيعات',
-        ]);
-
-        $this->assertDatabaseHas('client_contacts', [
-            'client_id' => $client->id,
-            'email' => 'ahmad@example.com',
-        ]);
-
-        $this->assertEquals('أحمد علي', $contact->name);
-        $this->assertEquals('0599123456', $contact->phone);
+        $this->assertTrue(Schema::hasTable('client_contacts'));
     }
 
-    /** @test */
-    public function email_must_be_unique_per_client()
+    public function test_client_contacts_table_has_expected_columns(): void
     {
-        $client = Client::factory()->create();
+        $expected = [
+            'id',
+            'client_id',
+            'name',
+            'email',
+            'phone',
+            'position',
+            'created_at',
+            'updated_at',
+        ];
 
-        ClientContact::create([
-            'client_id' => $client->id,
-            'name' => 'أحمد',
-            'email' => 'ahmad@example.com',
-            'phone' => '0599123456',
-            'position' => 'مدير',
-        ]);
-
-        $this->expectException(\Illuminate\Database\QueryException::class);
-
-        ClientContact::create([
-            'client_id' => $client->id,
-            'name' => 'خالد',
-            'email' => 'ahmad@example.com', // نفس البريد
-            'phone' => '0599111222',
-            'position' => 'مشرف',
-        ]);
+        foreach ($expected as $column) {
+            $this->assertTrue(
+                Schema::hasColumn('client_contacts', $column),
+                "Missing column: $column"
+            );
+        }
     }
+    public function test_email_must_be_unique_per_client(): void
+{
+    $client = \App\Models\Client::factory()->create();
+
+    \App\Models\ClientContact::create([
+        'client_id' => $client->id,
+        'name' => 'Contact One',
+        'email' => 'test@example.com',
+    ]);
+
+    $this->expectException(\Illuminate\Database\QueryException::class);
+
+    \App\Models\ClientContact::create([
+        'client_id' => $client->id,
+        'name' => 'Contact Two',
+        'email' => 'test@example.com',
+    ]);
+}
+
 }
