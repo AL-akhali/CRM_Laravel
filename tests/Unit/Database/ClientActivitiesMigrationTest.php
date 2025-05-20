@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
@@ -11,13 +11,16 @@ class ClientActivitiesMigrationTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function client_activities_table_exists()
+    public function it_checks_if_client_activities_table_exists()
     {
-        $this->assertTrue(Schema::hasTable('client_activities'));
+        $this->assertTrue(
+            Schema::hasTable('client_activities'),
+            'The client_activities table does not exist.'
+        );
     }
 
     /** @test */
-    public function client_activities_table_has_expected_columns()
+    public function it_checks_client_activities_table_has_required_columns()
     {
         $expectedColumns = [
             'id',

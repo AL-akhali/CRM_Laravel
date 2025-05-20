@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
@@ -10,12 +10,14 @@ class ClientTagPivotMigrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_client_tag_pivot_table_exists(): void
+    /** @test */
+    public function it_checks_if_client_tag_pivot_table_exists(): void
     {
-        $this->assertTrue(Schema::hasTable('client_tags'));
+        $this->assertTrue(Schema::hasTable('client_client_tag'));
     }
 
-    public function test_client_tag_pivot_table_has_expected_columns(): void
+    /** @test */
+    public function it_checks_client_tag_pivot_table_has_expected_columns(): void
     {
         $expected = [
             'client_id',
@@ -30,7 +32,8 @@ class ClientTagPivotMigrationTest extends TestCase
         }
     }
 
-    public function test_client_tag_pivot_table_has_unique_constraint(): void
+    /** @test */
+    public function it_enforces_unique_constraint_on_client_tag_pivot_table(): void
     {
         $client = \App\Models\Client::factory()->create();
         $tag = \App\Models\ClientTag::factory()->create();
@@ -42,7 +45,6 @@ class ClientTagPivotMigrationTest extends TestCase
 
         $this->expectException(\Illuminate\Database\QueryException::class);
 
-        // محاولة تكرار نفس العلاقة
         \DB::table('client_client_tag')->insert([
             'client_id' => $client->id,
             'client_tag_id' => $tag->id,

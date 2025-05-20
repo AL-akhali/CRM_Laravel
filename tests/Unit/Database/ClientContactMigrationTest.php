@@ -1,21 +1,26 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
+use App\Models\Client;
+use App\Models\ClientContact;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\QueryException;
 use Tests\TestCase;
 
 class ClientContactMigrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_client_contacts_table_exists(): void
+    /** @test */
+    public function it_checks_if_client_contacts_table_exists(): void
     {
         $this->assertTrue(Schema::hasTable('client_contacts'));
     }
 
-    public function test_client_contacts_table_has_expected_columns(): void
+    /** @test */
+    public function it_checks_client_contacts_table_has_expected_columns(): void
     {
         $expected = [
             'id',
@@ -35,23 +40,24 @@ class ClientContactMigrationTest extends TestCase
             );
         }
     }
-    public function test_email_must_be_unique_per_client(): void
-{
-    $client = \App\Models\Client::factory()->create();
 
-    \App\Models\ClientContact::create([
-        'client_id' => $client->id,
-        'name' => 'Contact One',
-        'email' => 'test@example.com',
-    ]);
+    /** @test */
+    public function it_ensures_email_is_unique_per_client(): void
+    {
+        $client = Client::factory()->create();
 
-    $this->expectException(\Illuminate\Database\QueryException::class);
+        ClientContact::create([
+            'client_id' => $client->id,
+            'name' => 'Contact One',
+            'email' => 'test@example.com',
+        ]);
 
-    \App\Models\ClientContact::create([
-        'client_id' => $client->id,
-        'name' => 'Contact Two',
-        'email' => 'test@example.com',
-    ]);
-}
+        $this->expectException(QueryException::class);
 
+        ClientContact::create([
+            'client_id' => $client->id,
+            'name' => 'Contact Two',
+            'email' => 'test@example.com',
+        ]);
+    }
 }

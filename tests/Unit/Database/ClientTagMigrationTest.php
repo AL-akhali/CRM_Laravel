@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
@@ -10,12 +10,14 @@ class ClientTagMigrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_client_tags_table_exists(): void
+    /** @test */
+    public function it_checks_if_client_tags_table_exists(): void
     {
         $this->assertTrue(Schema::hasTable('client_tags'));
     }
 
-    public function test_client_tags_table_has_expected_columns(): void
+    /** @test */
+    public function it_checks_client_tags_table_has_expected_columns(): void
     {
         $expected = [
             'id',
@@ -33,23 +35,24 @@ class ClientTagMigrationTest extends TestCase
             );
         }
     }
-    public function test_name_and_slug_are_unique(): void
-{
-    \DB::table('client_tags')->insert([
-        'name' => 'VIP',
-        'slug' => 'vip',
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
 
-    $this->expectException(\Illuminate\Database\QueryException::class);
+    /** @test */
+    public function it_ensures_name_and_slug_are_unique(): void
+    {
+        \DB::table('client_tags')->insert([
+            'name' => 'VIP',
+            'slug' => 'vip',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-    \DB::table('client_tags')->insert([
-        'name' => 'VIP',  // مكرر
-        'slug' => 'vip',  // مكرر
-        'created_at' => now(),
-        'updated_at' => now(),
-    ]);
-}
+        $this->expectException(\Illuminate\Database\QueryException::class);
 
+        \DB::table('client_tags')->insert([
+            'name' => 'VIP',  // مكرر
+            'slug' => 'vip',  // مكرر
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
 }
