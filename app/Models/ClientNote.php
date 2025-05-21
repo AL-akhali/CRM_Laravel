@@ -17,6 +17,15 @@ class ClientNote extends Model
         'visibility',
     ];
 
+    protected static function booted()
+    {
+        static::creating(function ($note) {
+            if (empty($note->user_id)) {
+                $note->user_id = auth()->id();
+            }
+        });
+    }
+
     public function client()
     {
         return $this->belongsTo(Client::class);

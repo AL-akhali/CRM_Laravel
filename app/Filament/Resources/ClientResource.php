@@ -26,7 +26,6 @@ use App\Filament\Resources\ClientResource\RelationManagers\ClientNoteRelationMan
 class ClientResource extends Resource
 {
     protected static ?string $model = Client::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-users'; // أيقونة مناسبة للعملاء
     protected static ?string $navigationLabel = 'العملاء';
     protected static ?string $pluralModelLabel = 'العملاء';
@@ -106,7 +105,7 @@ class ClientResource extends Resource
                 }),
 ])
                 
-            ->defaultSort('name');
+            ->defaultSort(column: 'name');
             
 }
     public static function getRelations(): array

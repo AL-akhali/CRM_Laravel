@@ -7,6 +7,7 @@ use App\Models\ClientContact;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables;
+use Illuminate\Validation\Rule;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\TextInput;
@@ -21,17 +22,30 @@ class ClientContactResource extends Resource
     protected static ?string $navigationLabel = 'جهات الاتصال';
     protected static ?string $pluralModelLabel = 'جهات الاتصال';
     protected static ?string $modelLabel = 'جهة اتصال';
-
     public static function form(Form $form): Form
     {
         return $form->schema([
+            TextInput::make('id')
+                ->hidden(),
             Select::make('client_id')
                 ->label('العميل')
                 ->relationship('client', 'name')
                 ->required(),
 
             TextInput::make('name')->label('الاسم')->required(),
-            TextInput::make('email')->label('البريد الإلكتروني')->required()->email(),
+            TextInput::make('email')
+                ->label('البريد الإلكتروني')
+                ->required()
+                ->email()
+                ->rules(function (callable $get) {
+                    return [
+                    Rule::unique('client_contacts', 'email')
+                        ->where(function ($query) use ($get) {
+                            return $query->where('client_id', $get('client_id'));
+                        })
+                        ->ignore($get('id')), // لتجاهل السجل الحالي عند التعديل
+        ];
+    }),     
             TextInput::make('phone')->label('رقم الهاتف'),
             TextInput::make('position')->label('الوظيفة'),
         ]);

@@ -8,6 +8,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\BadgeColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -58,13 +59,14 @@ class ClientActivityResource extends Resource
 
                 BadgeColumn::make('type')
                     ->label('نوع النشاط')
-                    ->colors([
+                    ->color(fn ($state) => match ($state) {
                         'call' => 'primary',
                         'email' => 'success',
                         'meeting' => 'warning',
                         'note' => 'info',
                         'update' => 'danger',
-                    ])
+                        default => 'gray',
+                    })
                     ->formatStateUsing(fn ($state) => match ($state) {
                         'email' => 'بريد إلكتروني',
                         'call' => 'مكالمة',
@@ -73,6 +75,24 @@ class ClientActivityResource extends Resource
                         'update' => 'تحديث',
                         default => $state,
                     }),
+            //         IconColumn::make('type')
+            // ->label('نوع النشاط')
+            // ->icon(fn (string $state): string => match ($state) {
+            //     'call' => 'heroicon-o-phone',
+            //     'email' => 'heroicon-o-mail',
+            //     'meeting' => 'heroicon-o-users',
+            //     'note' => 'heroicon-o-document-text',
+            //     'update' => 'heroicon-o-refresh',
+            //     default => 'heroicon-o-question-mark-circle',
+            // })
+            // ->color(fn (string $state): string => match ($state) {
+            //     'call' => 'primary',
+            //     'email' => 'success',
+            //     'meeting' => 'warning',
+            //     'note' => 'info',
+            //     'update' => 'danger',
+            //     default => 'gray',
+            // }),
 
                 Tables\Columns\TextColumn::make('description')
                     ->label('الوصف')
@@ -94,9 +114,6 @@ class ClientActivityResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
-            ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
             ]);
     }
 
