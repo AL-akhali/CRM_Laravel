@@ -57,24 +57,24 @@ class ClientActivityResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                BadgeColumn::make('type')
+                TextColumn::make('type')
                     ->label('نوع النشاط')
-                    ->color(fn ($state) => match ($state) {
+                    ->badge()
+                    ->color(fn ($state) => [
                         'call' => 'primary',
                         'email' => 'success',
                         'meeting' => 'warning',
                         'note' => 'info',
                         'update' => 'danger',
-                        default => 'gray',
-                    })
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'email' => 'بريد إلكتروني',
+                    ][$state] ?? 'gray')
+                    ->formatStateUsing(fn ($state) => [
                         'call' => 'مكالمة',
+                        'email' => 'بريد إلكتروني',
                         'meeting' => 'اجتماع',
                         'note' => 'ملاحظة',
                         'update' => 'تحديث',
-                        default => $state,
-                    }),
+                    ][$state] ?? $state),
+
             //         IconColumn::make('type')
             // ->label('نوع النشاط')
             // ->icon(fn (string $state): string => match ($state) {

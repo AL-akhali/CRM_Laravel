@@ -48,6 +48,12 @@ return [
     'info' => 'cyan',
     ],
 
+    'theme' => [
+    'light' => 'light',
+    'dark' => 'dark',
+    ],
+
+
     'dark_mode' => false,
 
     'default_filesystem_disk' => env('FILAMENT_FILESYSTEM_DISK', 'public'),

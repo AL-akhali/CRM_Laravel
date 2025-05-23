@@ -29,51 +29,18 @@ class Client extends Model
         return $this->hasMany(ClientContact::class);
     }
 
-    // app/Models/Client.php
-
     public function notes()
     {
         return $this->hasMany(ClientNote::class);
     }
-
-    // public function publicNotes()
-    // {
-    //     return $this->hasMany(ClientNote::class)->where('visibility', 'public');
-    // }
 
     public function activities()
     {
         return $this->hasMany(ClientActivity::class);
     }
 
-    // app/Models/Client.php
-
     public function tags()
     {
         return $this->belongsToMany(ClientTag::class);
     }
-
-
-
-
-    // العلاقات القادمة لاحقًا:
-    // public function contacts()
-    // {
-    //     return $this->hasMany(ClientContact::class);
-    // }
-
-    // public function notes()
-    // {
-    //     return $this->hasMany(ClientNote::class);
-    // }
-
-    // public function activities()
-    // {
-    //     return $this->hasMany(ClientActivity::class);
-    // }
-
-    // public function tags()
-    // {
-    //     return $this->belongsToMany(Tag::class);
-    // }
 }

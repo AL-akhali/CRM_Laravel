@@ -6,6 +6,13 @@ module.exports = {
     "./resources/**/*.vue",
     "./vendor/filament/**/*.blade.php", // هام لدعم filament
   ],
+  safelist: [
+  'bg-yellow-500',
+  'bg-red-500',
+  'bg-green-500',
+  'bg-blue-500',
+  ],
+  darkMode: 'class', // أو 'media'
   theme: {
     extend: {
       colors: {
