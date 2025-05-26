@@ -16,25 +16,6 @@ class ClientNoteRelationManager extends RelationManager
 
     protected static ?string $title = 'ملاحظات العميل';
 
-//     protected function getTableQuery(): Builder
-// {
-//     $query = parent::getTableQuery();
-
-//     if (!$query) {
-//         throw new \Exception('Parent query is null. تحقق من العلاقة "notes" في موديل Client.');
-//     }
-
-//     $userId = auth()->id();
-
-//     return $query->where(function ($query) use ($userId) {
-//         $query->where('visibility', 'public')
-//               ->orWhere(function ($query) use ($userId) {
-//                   $query->where('visibility', 'private')
-//                         ->where('user_id', $userId);
-//               });
-//     });
-// }
-
 
     public function form(Forms\Form $form): Forms\Form
     {

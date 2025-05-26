@@ -9,7 +9,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 
 class TagResource extends Resource
@@ -38,21 +40,32 @@ class TagResource extends Resource
     {
         return $table->columns([
             BadgeColumn::make('name')
-                ->label('الاسم (ملون)')
-                ->color(fn ($record) => null)
-                ->formatStateUsing(fn ($state) => $state)
-                ->extraAttributes(fn ($record) => [
-                    'style' => $record->color && str($record->color)->startsWith('#')
-                        ? "background-color: {$record->color}; color: white;"
-                        : '',
-                    'class' => $record->color && !str($record->color)->startsWith('#')
-                        ? $record->color . ' text-white'
-                        : '',
-                ]),
-            Tables\Columns\TextColumn::make('slug')->label('Slug'),
-            Tables\Columns\TextColumn::make('created_at')->label('تاريخ الإضافة')->dateTime(),
-        ])->defaultSort('created_at', 'desc');
-    }
+            ->label('الاسم (ملون)')
+            ->color(fn ($record) => null) // تبقي null أو ممكن تحذفها لو مش محتاجها
+            ->formatStateUsing(fn ($state) => $state)
+            ->extraAttributes(fn ($record) => [
+                'style' => ($record->color && Str::startsWith($record->color, '#'))
+                    ? "background-color: {$record->color}; color: white;"
+                    : '',
+                'class' => ($record->color && !Str::startsWith($record->color, '#'))
+                    ? "{$record->color} text-white"
+                    : '',
+            ]),
+            // TextColumn::make('name')
+            //     ->label('الاسم (ملون)')
+            //     ->formatStateUsing(fn ($state) => $state)
+            //     ->extraAttributes(fn ($record) => [
+            //         'style' => ($record->color && Str::startsWith($record->color, '#'))
+            //             ? "background-color: {$record->color}; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem;"
+            //             : '',
+            //         'class' => ($record->color && !Str::startsWith($record->color, '#'))
+            //             ? "{$record->color} text-white px-2 py-1 rounded"
+            //             : '',
+            //     ]),
+                    Tables\Columns\TextColumn::make('slug')->label('Slug'),
+                    Tables\Columns\TextColumn::make('created_at')->label('تاريخ الإضافة')->dateTime(),
+                ])->defaultSort('created_at', 'desc');
+            }
 
     public static function getRelations(): array
     {
