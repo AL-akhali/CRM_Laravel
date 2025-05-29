@@ -11,6 +11,7 @@ class ClientController extends Controller
 {
     public function index()
     {
+        
         return ClientResource::collection(Client::with(['contacts', 'notes', 'activities', 'tags'])->get());
     }
 
