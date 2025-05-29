@@ -17,7 +17,6 @@ class ClientContactResource extends JsonResource
             'phone'    => $this->phone,
             'position' => $this->position,
             'created_at' => $this->created_at->toDateTimeString(),
-            'contacts' => ClientContactResource::collection($this->whenLoaded('contacts')),
         ];
     }
 }

@@ -19,7 +19,7 @@ class ClientResource extends JsonResource
             'address'  => $this->address,
             'status'   => $this->status,
             'created_at' => $this->created_at->toDateTimeString(),
-
+           
             // علاقات (اختياري: حسب الحاجة)
             'contacts'   => ClientContactResource::collection($this->whenLoaded('contacts')),
             'notes'      => ClientNoteResource::collection($this->whenLoaded('notes')),

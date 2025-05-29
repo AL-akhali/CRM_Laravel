@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\ClientContactController;
+use App\Http\Controllers\Api\ClientActivityController;
+
 
 
 
@@ -24,3 +26,10 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('client-contacts', ClientContactController::class);
 });
+
+// الانشطه
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('client-activities', ClientActivityController::class);
+});
+
