@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\ClientContactController;
 use App\Http\Controllers\Api\ClientActivityController;
 use App\Http\Controllers\Api\ClientNoteController;
+use App\Http\Controllers\Api\ClientTagController;
+
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -36,4 +38,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('client-notes', ClientNoteController::class);
+});
+
+// العلامات
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('client-tags', ClientTagController::class);
 });
