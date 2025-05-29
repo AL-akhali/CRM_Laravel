@@ -5,8 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\ClientContactController;
 use App\Http\Controllers\Api\ClientActivityController;
-
-
+use App\Http\Controllers\Api\ClientNoteController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -33,3 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('client-activities', ClientActivityController::class);
 });
 
+// الملاحظات
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('client-notes', ClientNoteController::class);
+});
