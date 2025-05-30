@@ -8,43 +8,52 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\BadgeColumn;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Filters\SelectFilter;
 
 class ClientActivityResource extends Resource
 {
     protected static ?string $model = ClientActivity::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-phone';
-    protected static ?string $navigationLabel = 'انشطه العملاء';
-    protected static ?string $pluralModelLabel = 'انشطه العملاء';
-    protected static ?string $modelLabel = 'نشاط عميل';
+    protected static ?string $navigationIcon = 'heroicon-o-bolt';
+    protected static ?string $navigationLabel = ' أنشطة العملاء';
+    protected static ?string $pluralModelLabel = '⚡ أنشطة العملاء';
+    protected static ?string $modelLabel = 'نشاط';
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\Select::make('client_id')
-                ->label('العميل')
-                ->relationship('client', 'name')
-                ->required(),
+            Forms\Components\Section::make('📝 تفاصيل النشاط')
+                ->schema([
+                    Forms\Components\Select::make('client_id')
+                        ->label('👤 العميل')
+                        ->relationship('client', 'name')
+                        ->required()
+                        ->searchable()
+                        ->placeholder('اختر العميل'),
 
-            Forms\Components\Select::make('type')
-                ->label('نوع النشاط')
-                ->options([
-                    'call' => 'مكالمة',
-                    'email' => 'بريد إلكتروني',
-                    'meeting' => 'اجتماع',
-                    'note' => 'ملاحظة',
-                    'update' => 'تحديث',
-                ])
-                ->required(),
+                    Forms\Components\Select::make('type')
+                        ->label('📌 نوع النشاط')
+                        ->options([
+                            'call' => 'مكالمة',
+                            'email' => 'بريد إلكتروني',
+                            'meeting' => 'اجتماع',
+                            'note' => 'ملاحظة',
+                            'update' => 'تحديث',
+                        ])
+                        ->required()
+                        ->native(false)
+                        ->placeholder('حدد نوع النشاط'),
 
-            Forms\Components\Textarea::make('description')
-                ->label('الوصف')
-                ->required()
-                ->rows(4),
+                    Forms\Components\Textarea::make('description')
+                        ->label('🗒️ الوصف')
+                        ->required()
+                        ->placeholder('أدخل وصفاً مختصراً للنشاط')
+                        ->rows(4),
+                ])->columns(1)->compact(),
         ]);
     }
 
@@ -52,10 +61,12 @@ class ClientActivityResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('client.name')
-                    ->label('العميل')
+                TextColumn::make('client.name')
+                    ->label('👤 العميل')
+                    ->searchable()
                     ->sortable()
-                    ->searchable(),
+                    ->badge()
+                    ->color('primary'),
 
                 TextColumn::make('type')
                     ->label('نوع النشاط')
@@ -75,45 +86,32 @@ class ClientActivityResource extends Resource
                         'update' => 'تحديث',
                     ][$state] ?? $state),
 
-            //         IconColumn::make('type')
-            // ->label('نوع النشاط')
-            // ->icon(fn (string $state): string => match ($state) {
-            //     'call' => 'heroicon-o-phone',
-            //     'email' => 'heroicon-o-mail',
-            //     'meeting' => 'heroicon-o-users',
-            //     'note' => 'heroicon-o-document-text',
-            //     'update' => 'heroicon-o-refresh',
-            //     default => 'heroicon-o-question-mark-circle',
-            // })
-            // ->color(fn (string $state): string => match ($state) {
-            //     'call' => 'primary',
-            //     'email' => 'success',
-            //     'meeting' => 'warning',
-            //     'note' => 'info',
-            //     'update' => 'danger',
-            //     default => 'gray',
-            // }),
+                TextColumn::make('description')
+                    ->label('🗒️ الوصف')
+                    ->limit(50)
+                    ->tooltip(fn ($record) => $record->description),
 
-                Tables\Columns\TextColumn::make('description')
-                    ->label('الوصف')
-                    ->limit(50),
-
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('التاريخ')
-                    ->dateTime()
+                TextColumn::make('created_at')
+                    ->label('📅 التاريخ')
+                    ->dateTime('Y-m-d H:i')
                     ->sortable(),
             ])
-            ->defaultSort('created_at', 'desc')
             ->filters([
-                Tables\Filters\SelectFilter::make('client_id')
-                    ->label('تصفية حسب العميل')
+                SelectFilter::make('client_id')
+                    ->label('🔍 تصفية حسب العميل')
                     ->relationship('client', 'name')
                     ->searchable()
                     ->placeholder('الكل'),
             ])
+            ->defaultSort('created_at', 'desc')
+            ->striped()
+            ->emptyStateHeading('لا توجد أنشطة حالياً')
+            ->emptyStateDescription('ابدأ بإضافة نشاط جديد للعميل')
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->modalHeading('هل أنت متأكد؟')
+                    ->modalDescription('سيتم حذف النشاط بشكل نهائي.'),
             ]);
     }
 
